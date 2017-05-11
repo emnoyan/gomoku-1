@@ -149,3 +149,28 @@ header .hide-completed {
   border-left: 1px solid #2c3e50;
   box-sizing: border-box;
 }
+
+.boardCell {
+  height:100%;
+  width:100%;
+}
+
+.boardCellCircle {
+    margin: 15%;
+    width: 70%;
+    height: 70%;
+    border: 3px solid #e74c3c;
+    border-radius: 50%;
+    box-sizing: border-box;
+}
+
+.button {
+    background-color: #4CAF50; /* Green */
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+}
