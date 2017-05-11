@@ -173,4 +173,24 @@ header .hide-completed {
     text-decoration: none;
     display: inline-block;
     font-size: 16px;
+    -webkit-transition-duration: 0.4s; /* Safari */
+    transition-duration: 0.4s;
+}
+
+.button1 {
+    background-color: white; 
+    color: black; 
+    border: 2px solid #4CAF50;
+    cursor: pointer;
+}
+
+.button1:hover {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.message {
+    float: right;
+    width: 62%;
+    padding-top: 10px;
 }
