@@ -164,6 +164,28 @@ header .hide-completed {
     box-sizing: border-box;
 }
 
+.boardCellCross {
+    margin: auto;
+    margin-top: 0.65%;
+    width: 3px;
+    height: 98.7%;
+    background-color: #2ecc71;
+    -webkit-transform: rotate(-45deg);
+    transform: rotate(-45deg);
+    border-radius: 1.5px;
+}
+
+.boardCellCross:before {
+    background-color: inherit;
+    border-radius: inherit;
+    height: inherit;
+    width: inherit;
+    position: absolute;
+    content: "";
+    -webkit-transform: rotate(90deg);
+    transform: rotate(90deg);
+}
+
 .button {
     background-color: #4CAF50; /* Green */
     border: none;
