@@ -9,23 +9,25 @@ import { Users } from '../api/users.js';
 // App component - represents the whole app
 
 const BOARD_SIZE = 15
+const SEQUENCE_SIZE = 5
 class App extends Component {
 
   constructor(props) {
     super(props)
     this.state = {
-      user: undefined
+      user: undefined,
+      status: 'continue'
     }
-  }
-
-  componentWillMount() {
-
   }
 
   componentWillReceiveProps(nextProps) {
     if(!this.state.user) {
       this.registerUser(nextProps.users)
     }
+
+    const status = this.checkWin(nextProps.board)
+    this.setState({ status })
+    console.log('status',status)
   }
 
   isGameReady() {
@@ -35,16 +37,21 @@ class App extends Component {
     return circle.length == 1 && cross.length == 1
   }
 
-  registerUser(userList) {
-    const { roomId } = this.props.match.params 
-    const users = userList.filter(user => user.roomId === roomId)
-    console.log('users', users.length)
+  getUserType(users, roomId) {
+    const circle = users.filter(user => user.roomId === roomId && user.type === 'circle')
+    const cross = users.filter(user => user.roomId === roomId && user.type === 'cross')
     let type = 'view'
-    if(users.length === 0) {
+    if(circle.length === 0) {
       type = 'circle'
-    } else if(users.length === 1) {
+    } else if (cross.length === 0) {
       type = 'cross'
     }
+    return type
+  }
+
+  registerUser(userList) {
+    const { roomId } = this.props.match.params
+    const type = this.getUserType(userList, roomId)
     
     const user = {
       userId: Random.id(),
@@ -64,6 +71,7 @@ class App extends Component {
   handleCellClick(row, col) {
     const { roomId } = this.props.match.params
     if(!this.isGameReady() // not enough 2 player
+      || this.state.status !== 'continue' // end game
       || this.props.board[row][col] // the cell didn't check
       || this.state.user.type === 'view' // not a viewer
       || (this.props.selections.length > 0 && this.props.selections[0].type === this.state.user.type)) { // not a last player checked
@@ -98,6 +106,46 @@ class App extends Component {
     const { roomId } = this.props.match.params 
     return this.props.users.filter(user => user.roomId === roomId).map(user => (<li>{(user.userId === this.state.user.userId ? 'You':'Guest_' + user.userId) + ': ' + user.type}</li>));
   }
+
+  checkWin(grid) {
+    for(var i = 0; i < BOARD_SIZE; i++){
+      for(var j = 0; j < BOARD_SIZE; j++){
+        if(grid[i][j] === 'circle' || grid[i][j] === 'cross') {
+          const type = grid[i][j]
+          for(var k = 1; k < SEQUENCE_SIZE && grid[i][j+k] === type; k++){
+            if(k == SEQUENCE_SIZE-1){
+              return type;
+            }
+          }
+          for(var k = 1; k < SEQUENCE_SIZE && grid[i+k][j] === type; k++){
+            if(k == SEQUENCE_SIZE-1){
+              return type;
+            }
+          }
+          for(var k = 1; k < SEQUENCE_SIZE && grid[i+k][j-k] === type; k++){
+            if(k == SEQUENCE_SIZE-1){
+              return type;
+            }
+          }
+          for(var k = 1; k < SEQUENCE_SIZE && grid[i+k][j+k] === type; k++){
+            if(k == SEQUENCE_SIZE-1){
+              return type;
+            }
+          }
+        }
+      }
+    }
+
+    return 'continue'
+  }
+
+  buildGuideMessage() {
+    if(this.state.status !== 'continue') {
+      return (this.state.user.type !== this.state.status ? 'You Lost' : 'You Win') + '. Click New Game to continue'
+    } else {
+      return this.isGameReady() ? 'Game is ready. Let go!' : 'Wait for friend'
+    }
+  }
  
   render() {
     return (
@@ -109,7 +157,7 @@ class App extends Component {
           <div className="message">
             <div className="messagesContainer">
               <div className="newMainText" id="message">try to get 5 in a row!</div>
-              <div className="newMainText">{this.isGameReady() ? 'Game is ready. Let go!' : 'Wait for friend'}</div>
+              <div className="newMainText">{this.buildGuideMessage()}</div>
             </div>
           </div>
         </div>
