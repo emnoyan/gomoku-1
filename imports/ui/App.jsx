@@ -27,7 +27,6 @@ class App extends Component {
 
     const status = this.checkWin(nextProps.board)
     this.setState({ status })
-    console.log('status',status)
   }
 
   isGameReady() {

@@ -8,6 +8,6 @@ meteor gomoku
 
 ```
 try localhost:3000/room/:id
-2 user join first will play together, 3 and more will in the view mode
-please dont try with roomId = 99 // I have some cheat in this room to make it work
+2 users join first will play together, 3 and more will be in the view mode
+please dont try with roomId = 99 // I have some cheat in this room to make it works
 ```
