@@ -156,22 +156,20 @@ class App extends Component {
  
   render() {
     return (
-      <div className="container">
+      <div className="game_container">
         <div className="controls">
-          <button className="button button1" onClick={() => this.resetGame()}>
+          <button className="button new_button" onClick={() => this.resetGame()}>
               New
           </button>
-          <div className="message">
-            <div className="messagesContainer">
-              <div className="newMainText" id="message">try to get 5 in a row!</div>
-              <div className="newMainText">{this.buildGuideMessage()}</div>
-            </div>
+          <div className="messages_container">
+            <div className="infor_message" id="message">try to get 5 in a row!</div>
+            <div className="guide_message">{this.buildGuideMessage()}</div>
           </div>
         </div>
         <div className="board">
             {this.renderBoard()}
         </div>
-        <div className="usersList">
+        <div className="users_list">
             {this.renderUserList()}
         </div>
       </div>
