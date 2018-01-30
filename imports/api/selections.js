@@ -7,7 +7,7 @@ Meteor.methods({
     'selections.remove'() {
         Selections.remove({});
     },
-	'selections.insert'(selection) {
+    'selections.insert'(selection) {
         Selections.insert(selection)
     }
 });
