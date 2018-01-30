@@ -3,10 +3,9 @@ import ReactDOM from 'react-dom';
 import { Meteor } from 'meteor/meteor';
 import { Random } from 'meteor/random'
 import { createContainer } from 'meteor/react-meteor-data';
+
 import { Selections } from '../api/selections.js';
 import { Users } from '../api/users.js';
- 
-// App component - represents the whole app
 
 const BOARD_SIZE = 15
 const SEQUENCE_SIZE = 5
@@ -37,18 +36,23 @@ class App extends Component {
   }
 
   getUserType(users, roomId) {
+
     const circle = users.filter(user => user.roomId === roomId && user.type === 'circle')
     const cross = users.filter(user => user.roomId === roomId && user.type === 'cross')
+
     let type = 'view'
+
     if(circle.length === 0) {
       type = 'circle'
     } else if (cross.length === 0) {
       type = 'cross'
     }
+
     return type
   }
 
   registerUser(userList) {
+
     const { roomId } = this.props.match.params
     const type = this.getUserType(userList, roomId)
     
@@ -59,24 +63,28 @@ class App extends Component {
       createdAt: new Date()
     }
 
-    Users.insert({
-      ...user
-    });
+    Meteor.call('users.insert', {...user});
 
+    // keep userId to remove when close browser 
     globalUserId = user.userId
+
     this.setState({ user })
   }
 
   handleCellClick(row, col) {
+
     const { roomId } = this.props.match.params
+
     if(!this.isGameReady() // not enough 2 player
       || this.state.status !== 'continue' // end game
       || this.props.board[row][col] // the cell didn't check
       || this.state.user.type === 'view' // not a viewer
       || (this.props.selections.length > 0 && this.props.selections[0].type === this.state.user.type)) { // not a last player checked
+
       return;
     }
-    Selections.insert({
+
+    Meteor.call('selections.insert', {
       type: this.state.user.type,
       row,
       col,
@@ -173,15 +181,22 @@ class App extends Component {
 
 App.propTypes = {
   board: PropTypes.array.isRequired,
+  selections: PropTypes.array.isRequired,
+  users: PropTypes.array.isRequired
 };
 
 export default createContainer((props) => {
-  const { roomId } = props.match.params 
+
+  const { roomId } = props.match.params
+
   let board = new Array(BOARD_SIZE)
+
   for(let i=0; i< BOARD_SIZE; i++) {
     board[i] = new Array(BOARD_SIZE)
   }
+
   const selections = Selections.find({roomId}, { sort: { createdAt: -1 }}).fetch()
+
   board = selections.reduce((pre, item) => {
     pre[item.row][item.col] = item.type
     return pre

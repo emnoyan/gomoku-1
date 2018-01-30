@@ -6,5 +6,8 @@ export const Users = new Mongo.Collection('users')
 Meteor.methods({
 	'users.remove'(userId) {
     	Users.remove({userId});
+  	},
+  	'users.insert'(user) {
+  		Users.insert(user);
   	}
 });
